@@ -1,0 +1,12 @@
+<side>
+  <row>
+    <column name="col_a" value="AAA"/>
+    <column name="col_b" value="BBB"/>
+    <column name="col_c" value="CCC"/>
+  </row>
+  <row>
+    <column name="col_a" value="aaa"/>
+    <column name="col_b" value="bbb"/>
+    <column name="col_c" value="ccc"/>
+  </row>
+</side>

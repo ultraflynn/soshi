@@ -1,0 +1,25 @@
+To Do
+=====
+
+2003.09.16 (MJB)
+The way in which the comparators are defined is wrong. You should be able to
+nest comparators, or list them. At the moment combining comparators requires the
+developer to write a new comparator which combines the functions. You need to be
+able to do something like this:-
+
+<column name="account_name_wil" description="Account Name">
+    <comparatorList>
+        <comparator className="net.sourceforge.soshi.IgnoreWhitespaceComparator"/>
+        <comparator className="net.sourceforge.soshi.IgnoreCaseComparator"/>
+        <comparator className="net.sourceforge.soshi.BeginsWithComparator"/>
+    </comparatorList>
+</column>
+
+2003.10.16 (MJB)
+The XML file loading uses a custom routine which utilises dom4j and SAXP. There
+are more standard and more easily extendable ways of reading config file and are
+* disgester
+* JAXB
+* carbine
+We're going to use carbine as the rec already uses it for another configuration
+file and therefore it's already in the build. Plus it's the nuts so we'll use it.

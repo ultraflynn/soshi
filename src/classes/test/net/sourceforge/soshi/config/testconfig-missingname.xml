@@ -1,0 +1,18 @@
+<rec>
+    <columns>
+        <column name="col1" key="true" />
+        <column name="col2" key="true" />
+        <column name="col3" />
+        <column name="col4" />
+    </columns>
+    <sides>
+        <side name="Side1" class="net.sourceforge.soshi.DummySide">
+            <parameter name="param1" value="value1" />
+            <parameter name="param2" value="value2" />
+        </side>
+        <side name="Side2" class="net.sourceforge.soshi.DummySide">
+            <parameter name="param3" value="value3" />
+            <parameter name="param4" value="value4" />
+        </side>
+    </sides>
+</rec>

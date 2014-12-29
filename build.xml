@@ -1,0 +1,113 @@
+<project default="jar" basedir=".">
+
+  <target name="props" description="* Initialise properties">
+    <tstamp/>
+    <property file="build.properties"/>
+  </target>
+
+
+  <target name="dirs" description="* Create directories">
+    <mkdir dir="${build.dir}"/>
+    <mkdir dir="${build.classes.dir}"/>
+    <mkdir dir="${build.classes.main.dir}"/>
+    <mkdir dir="${build.classes.test.dir}"/>
+    <mkdir dir="${build.jars.dir}"/>
+    <mkdir dir="${build.log.dir}"/>
+  </target>
+  
+
+
+  <target name="init" depends="props,dirs" description="* Set up">
+    <taskdef name="checkstyle" classname="com.puppycrawl.tools.checkstyle.CheckStyleTask">
+      <classpath location="lib/checkstyle-all-2.2.jar"/>
+    </taskdef>
+  </target>
+
+
+  <target name="copy" depends="init" description="* Copies configuration files to the build directory">
+    <copy toDir="${build.classes.main.dir}">
+      <fileset dir="${src.classes.main.dir}">
+        <include name="**/*.js"/>
+      </fileset>
+    </copy>
+    <copy toDir="${build.classes.test.dir}">
+      <fileset dir="${src.classes.test.dir}">
+        <include name="**/*.xml"/>
+        <include name="**/*.xls"/>
+        <include name="**/*.sql"/>
+      </fileset>
+    </copy>
+  </target>
+
+
+  <target name="style" depends="init" description="* Checks the style of the Java files">
+    <checkstyle javadocScope="nothing" lcurlyType="nl" lcurlyMethod="nl" allowProtected="true" ignorePublicInInterface="true" maxLineLen="120" constPattern="." ignoreLineLengthPattern="&quot;">
+      <fileset dir="${src.classes.main.dir}" includes="**/*.java" excludes="**/CVS/**"/>
+    </checkstyle>
+  </target>
+
+
+  <target name="compile" depends="copy,style" description="* Builds main classes">
+    <javac srcdir="${src.classes.main.dir}" destdir="${build.classes.main.dir}" excludes="**/CVS/**" debug="true" deprecation="true">
+      <classpath>
+        <pathelement location="${lib.dir}/jakarta-regexp-1.3.jar"/>
+        <pathelement location="${lib.dir}/dom4j-full.jar"/>
+        <pathelement location="${lib.dir}/jakarta-poi.jar"/>
+        <pathelement location="${lib.dir}/commons-digester.jar"/>
+        <pathelement location="${lib.dir}/carbine-1.0.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+
+  <target name="compile-test" depends="compile" description="* Builds test classes">
+    <javac srcdir="${src.classes.test.dir}" destdir="${build.classes.test.dir}" excludes="**/CVS/**" debug="true">
+      <classpath>
+        <pathelement location="${build.classes.main.dir}"/>
+        <pathelement location="${lib.dir}/jakarta-regexp-1.3.jar"/>
+        <pathelement location="${lib.dir}/dom4j-full.jar"/>
+        <pathelement location="${lib.dir}/junit.jar"/>
+        <pathelement location="${lib.dir}/jakarta-poi.jar"/>
+        <pathelement location="${lib.dir}/carbine-1.0.jar"/>
+      </classpath>
+    </javac>
+  </target>
+
+
+  <target name="test" depends="compile-test" description="* Runs the tests">
+    <junit printsummary="yes" haltonfailure="yes" fork="yes">
+      <formatter type="plain"/>
+
+      <classpath>
+        <pathelement location="${build.classes.main.dir}"/>
+        <pathelement location="${build.classes.test.dir}"/>
+        <pathelement location="${lib.dir}/jakarta-regexp-1.3.jar"/>
+        <pathelement location="${lib.dir}/dom4j-full.jar"/>
+        <pathelement location="${lib.dir}/ojdbc14.jar"/>
+        <pathelement location="${lib.dir}/nls_charset12.zip"/>
+        <pathelement location="${lib.dir}/commons-digester.jar"/>
+        <pathelement location="${lib.dir}/commons-collections.jar"/>
+        <pathelement location="${lib.dir}/commons-logging.jar"/>
+        <pathelement location="${lib.dir}/jakarta-poi.jar"/>
+        <pathelement location="${lib.dir}/carbine-1.0.jar"/>
+      </classpath>
+
+      <batchtest todir="${build.log.dir}" fork="yes">
+        <fileset dir="${src.classes.test.dir}">
+          <include name="**/*Test*.java"/>
+          <exclude name="**/CVS/**"/>
+        </fileset>
+      </batchtest>
+    </junit>
+  </target>
+
+
+  <target name="jar" depends="compile" description="* Generates jar file">
+    <jar jarfile="${build.jars.dir}/${classes.jar.file}" basedir="${build.classes.main.dir}" compress="false"/>
+  </target>
+
+
+  <target name="clean" depends="init" description="* Clean up directory">
+    <delete dir="${build.dir}"/>
+  </target>
+</project>
